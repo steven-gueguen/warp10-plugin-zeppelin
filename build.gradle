@@ -83,7 +83,7 @@ wrapper {
 
 repositories {
   jcenter()
-  
+
   maven {
     url 'https://dl.bintray.com/senx/maven'
   }
@@ -187,6 +187,17 @@ task javadocJar(type: Jar) {
 javadocJar.dependsOn(javadoc)
 
 publishing {
+  repositories {
+    maven {
+      url = uri("https://maven.pkg.github.com/steven-gueguen/warp10-plugin-zeppelin")
+      credentials {
+        //findProperty will allow these properties to be absent and still run the build, just won't publish
+        username = findProperty("GITHUB_USERNAME")
+        password = findProperty("GITHUB_TOKEN")
+      }
+    }
+  }
+
   publications {
     //
     // Publication for the standard jar
@@ -198,7 +209,7 @@ publishing {
       version project.ext.version
 
       // We publish the result of the 'jar' task and the sources jar
-      from components.java 
+      from components.java
       artifact sourcesJar
       artifact javadocJar
     }
@@ -220,33 +231,33 @@ publishing {
   }
 }
 
-bintray {
-  dryRun = false
+// bintray {
+//   dryRun = false
 
-  user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
-  key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
+//   user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+//   key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
 
-  publications = project.ext.uberjar ? [ 'uberjar' ] : ['stdjar' ]
-  publish = null != System.getProperty('publish')
+//   publications = project.ext.uberjar ? [ 'uberjar' ] : ['stdjar' ]
+//   publish = null != System.getProperty('publish')
 
-  pkg {
+//   pkg {
 
-    repo = project.ext.bintrayRepo
-    name = project.ext.name
+//     repo = project.ext.bintrayRepo
+//     name = project.ext.name
 
-    if (project.hasProperty('bintrayUserOrg') || null != System.getenv('BINTRAY_USERORG')) {
-      userOrg = project.hasProperty('bintrayUserOrg') ? project.property('bintrayUserOrg') : System.getenv('BINTRAY_USERORG')
-    }
+//     if (project.hasProperty('bintrayUserOrg') || null != System.getenv('BINTRAY_USERORG')) {
+//       userOrg = project.hasProperty('bintrayUserOrg') ? project.property('bintrayUserOrg') : System.getenv('BINTRAY_USERORG')
+//     }
 
-    vcsUrl = project.ext.bintrayVcsUrl
-    licenses = project.ext.bintrayLicenses
+//     vcsUrl = project.ext.bintrayVcsUrl
+//     licenses = project.ext.bintrayLicenses
 
-    version {
-      version = version
-      released = new Date()
-    }
-  }
-}
+//     version {
+//       version = version
+//       released = new Date()
+//     }
+//   }
+// }
 
 
 //
